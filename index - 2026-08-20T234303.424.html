@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MetroBuilds — 75-Day Property Cycle</title>
+<style>
+:root{
+  --ink:#14181f;
+  --panel:rgba(8,10,14,.9);
+  --panelBorder:#e9edf2;
+  --gold:#ffcc00;
+  --green:#00ff7a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0b0714;overflow:hidden}
+body{font-family:system-ui,'Segoe UI',Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+#wrap{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center}
+#stage{position:relative;width:1536px;height:1024px;flex:none;background:radial-gradient(circle at 50% 18%,rgba(255,205,92,.18),transparent 18%),linear-gradient(160deg,#0d0a3a 0%,#1a0b5c 38%,#2d0a6e 68%,#071743 100%);border-radius:10px;overflow:hidden;transform-origin:center center;box-shadow:0 30px 80px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.08) inset}
+#scene{position:absolute;inset:0;width:100%;height:100%}
+.hud{position:absolute;color:#fff;user-select:none}
+
+/* ---------- LOGO ---------- */
+#logo{left:16px;top:10px;display:flex;align-items:center;gap:10px;z-index:12;padding:8px 14px 10px;border-radius:18px;background:linear-gradient(180deg,rgba(9,11,16,.72),rgba(9,11,16,.38));backdrop-filter:blur(4px);box-shadow:0 8px 20px rgba(0,0,0,.18)}
+#logoTxt{font-family:'Arial Black',Arial,sans-serif;font-weight:900;font-style:italic;font-size:46px;letter-spacing:1px;transform:skewX(-4deg);line-height:1;
+  text-shadow:-3px -3px 0 rgba(5,8,14,.98),3px -3px 0 rgba(5,8,14,.98),-3px 3px 0 rgba(5,8,14,.98),3px 3px 0 rgba(5,8,14,.98),0 5px 0 rgba(5,8,14,.98),0 10px 16px rgba(0,0,0,.55);}
+#logoTxt .lg1{color:#c8e7ff}
+#logoTxt .lg2{background:linear-gradient(180deg,#9fe4ff 0%,#67c7ff 26%,#9f7dff 58%,#5a2eff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:1.1px rgba(7,8,13,.65);filter:drop-shadow(0 0 10px rgba(122,190,255,.38))}
+
+/* ---------- TOP BAR ---------- */
+#balancePill{left:512px;top:16px;height:64px;display:flex;align-items:center;gap:10px;padding:0 18px;background:#0c0d10;border:3px solid #ffcc00;border-radius:18px;
+  box-shadow:0 5px 0 rgba(0,0,0,.5),inset 0 0 0 2px #1c1405,inset 0 10px 14px rgba(255,220,0,.15),0 0 20px rgba(255,200,0,.2);z-index:12}
+#balancePill .bag{font-size:30px;filter:drop-shadow(0 2px 1px rgba(0,0,0,.6))}
+#balVal{font-size:34px;font-weight:900;color:var(--gold);letter-spacing:.5px;text-shadow:0 2px 0 rgba(0,0,0,.7)}
+#balancePill .cur{font-size:30px;font-weight:900;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.7)}
+
+.topBtn{display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:16px;cursor:pointer;z-index:12;
+  box-shadow:0 5px 0 rgba(0,0,0,.5);text-shadow:0 2px 0 rgba(0,0,0,.55)}
+.topBtn:active{transform:translateY(2px);box-shadow:0 3px 0 rgba(0,0,0,.5)}
+#btnCollect{left:852px;top:14px;width:352px;height:68px;background:linear-gradient(180deg,#aaff33 0%,#55dd00 55%,#33aa00 100%);border:3px solid #0c4f12}
+#btnCollect .l1{display:flex;align-items:center;gap:8px;font-size:23px;font-weight:900;letter-spacing:.5px}
+#btnCollect .l1 .cc{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe9a3,#f7b500 70%);border:2px solid #7a5200;color:#7a5200;
+  display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;text-shadow:none}
+#btnCollect .l2{font-size:15px;font-weight:800;color:#eaffea;margin-top:1px}
+#btnCollect .l2 b{color:#fff}
+#btnCollect.ready{animation:pulseBtn 1s ease-in-out infinite}
+@keyframes pulseBtn{0%,100%{box-shadow:0 5px 0 rgba(0,0,0,.5),0 0 0 0 rgba(142,230,63,.7)}50%{box-shadow:0 5px 0 rgba(0,0,0,.5),0 0 22px 6px rgba(142,230,63,.65)}}
+#btnWalletTop{display:none}
+
+/* ---------- PANELES IZQUIERDA ---------- */
+.panel{background:var(--panel);border:2.5px solid var(--panelBorder);border-radius:16px;padding:12px 14px;box-shadow:0 8px 18px rgba(0,0,0,.5);z-index:10}
+.panel h3{font-size:19px;font-weight:900;letter-spacing:.6px;margin-bottom:8px}
+#incomePanel{left:16px;top:156px;width:316px;background:linear-gradient(180deg,rgba(7,10,16,.86),rgba(7,10,16,.72));backdrop-filter:blur(6px)}
+#incomePanel .row{display:flex;justify-content:space-between;gap:10px;font-size:16px;margin:6px 0}
+#incomePanel .lbl{color:#dbe1ea}
+#incomePanel .val{font-weight:800;white-space:nowrap}
+#incAct b{color:#fff}
+#incPct{color:#cfd6df;font-weight:700}
+#incTimer{color:var(--green);font-weight:900;font-variant-numeric:tabular-nums}
+#legendPanel{display:none}
+#legendPanel .lrow{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:800;margin:7px 0}
+#legendPanel .lrow svg{flex:none}
+#howtoPanel{display:none}
+#howtoPanel .step{font-size:14.5px;font-weight:600;margin:7px 0;line-height:1.35;color:#f2f5f9}
+
+/* ---------- BADGES DE EDIFICIOS ---------- */
+.badge{position:absolute;transform:translate(-50%,-100%);background:rgba(8,10,14,.93);border:2px solid #f2f5f9;border-radius:12px;
+  padding:6px 10px 8px;text-align:center;min-width:138px;cursor:pointer;z-index:6;box-shadow:0 6px 12px rgba(0,0,0,.5)}
+.badge .tail{position:absolute;left:50%;bottom:-7px;width:12px;height:12px;background:rgba(8,10,14,.93);border-right:2px solid #f2f5f9;border-bottom:2px solid #f2f5f9;transform:translateX(-50%) rotate(45deg)}
+.badge .bname{font-size:14px;font-weight:900;letter-spacing:.3px}
+.badge .brow{display:flex;align-items:center;justify-content:center;gap:6px;margin:4px 0}
+.pct{background:linear-gradient(180deg,#46c24a,#1f8f2f);border:2px solid #0a4f14;border-radius:999px;padding:1px 11px;font-size:15px;font-weight:900;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.5)}
+.badge .brent{font-size:12.5px;font-weight:700;color:#e8ecf2}
+.badge .brent b{color:var(--green)}
+.btime{display:inline-block;background:#000;border:1.5px solid #3a3f47;border-radius:8px;padding:1px 9px;font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:4px;color:#fff}
+.btime.ok{color:#8ef58e;border-color:#2c7a2c}
+.badge.sel{border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,210,74,.35),0 6px 12px rgba(0,0,0,.5)}
+.badge.sel .tail{border-color:var(--gold)}
+.badge:hover{transform:translate(-50%,-100%) scale(1.03)}
+
+/* ---------- PANEL DETALLE (DERECHA) ---------- */
+#detailPanel{left:1234px;top:286px;width:286px;text-align:center;padding:16px 16px 18px;background:linear-gradient(180deg,rgba(6,13,10,.84),rgba(6,13,10,.72));backdrop-filter:blur(6px)}
+#dTitle{font-size:24px;font-weight:900;letter-spacing:1.2px;color:#ffe27a;text-shadow:0 2px 0 rgba(0,0,0,.6);margin-bottom:8px}
+#dPrev{display:none}
+#dLevel{font-size:16px;font-weight:900;color:#7cfc66;letter-spacing:1px;margin-bottom:10px}
+#detailPanel hr{border:none;border-top:1.5px solid #2c313b;margin:8px 0}
+.kv{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:15px;margin:7px 0}
+.kv .k{color:#cfd6df;font-weight:700;white-space:nowrap}
+.kv .v{font-weight:900;white-space:nowrap}
+.bar{flex:1;height:14px;background:#23262c;border:1.5px solid #000;border-radius:8px;overflow:hidden;margin:0 8px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#7cfc66,#2fae1f);border-radius:6px;transition:width .3s}
+#dCalc{font-size:13px;color:#aab2bf;text-align:right;margin-top:-4px}
+#dNextWrap{margin:8px 0 10px;font-size:15px}
+#dNextWrap .k{color:#cfd6df;font-weight:700;display:block;margin-bottom:4px}
+#btnClean{width:100%;padding:9px 6px 10px;background:linear-gradient(180deg,#4fb0f7 0%,#1f77e0 55%,#0e4fb0 100%);border:3px solid #0a2f66;border-radius:14px;
+  color:#fff;font-size:17px;font-weight:900;letter-spacing:.4px;cursor:pointer;text-shadow:0 2px 0 rgba(0,0,0,.5);box-shadow:0 5px 0 rgba(0,0,0,.45)}
+#btnClean .sub{display:block;font-size:12.5px;font-weight:700;color:#eaf4ff;margin-top:2px;text-shadow:none}
+#btnClean:active{transform:translateY(2px);box-shadow:0 3px 0 rgba(0,0,0,.45)}
+#btnClean:disabled{filter:saturate(.35) brightness(.8);cursor:not-allowed}
+#btnClean:disabled:active{transform:none}
+
+/* ---------- NAV INFERIOR ---------- */
+#tabs{left:12px;right:12px;bottom:12px;height:76px;display:flex;gap:14px;z-index:14}
+.tab{flex:1;display:flex;align-items:center;justify-content:center;gap:10px;border-radius:16px;border:3px solid rgba(255,255,255,.82);
+  font-size:24px;font-weight:900;letter-spacing:1px;color:#fff;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.45),0 14px 28px rgba(0,0,0,.12);text-shadow:0 2px 0 rgba(0,0,0,.55)}
+.tab:active{transform:translateY(2px);box-shadow:0 3px 0 rgba(0,0,0,.45)}
+.tab .num{display:none}
+.tab svg{flex:none}
+#tCiudad{background:linear-gradient(180deg,#33ccff 0%,#0077ff 60%,#0044cc 100%)}
+#tTienda{background:linear-gradient(180deg,#cc44ff 0%,#9900cc 60%,#6600aa 100%)}
+#tBill{background:linear-gradient(180deg,#ffaa00 0%,#ff7700 60%,#cc5500 100%)}
+#tRef{flex:1.25;background:linear-gradient(180deg,#66ff44 0%,#22cc00 60%,#119900 100%)}
+.tab.active{outline:3px solid var(--gold);outline-offset:-1px}
+
+/* ---------- MODALES ---------- */
+.modal{position:absolute;inset:0;background:rgba(4,5,9,.68);display:none;z-index:30}
+.modal.open{display:block}
+.mPanel{position:absolute;left:50%;top:80px;transform:translateX(-50%);width:920px;max-height:816px;overflow:auto;background:#12151c;
+  border:3px solid var(--panelBorder);border-radius:20px;padding:18px 24px 22px;color:#fff;scrollbar-width:thin}
+.mPanel::-webkit-scrollbar{width:8px}.mPanel::-webkit-scrollbar-thumb{background:#39404d;border-radius:4px}
+.mHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.mHead h2{font-size:26px;font-weight:900;letter-spacing:1px;color:var(--gold);text-shadow:0 2px 0 rgba(0,0,0,.5)}
+.mHead .sub{font-size:14px;color:#aab2bf;font-weight:600;margin-top:2px}
+.x{width:38px;height:38px;border-radius:10px;background:#232935;border:2px solid #414a5a;color:#fff;font-size:20px;font-weight:900;cursor:pointer}
+.x:hover{background:#2d3543}
+#shopGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{background:#1a1f29;border:2px solid #39404d;border-radius:16px;padding:12px 12px 14px;text-align:center}
+.card svg{height:128px;width:100%}
+.card .cn{font-size:17px;font-weight:900;margin-top:2px}
+.card .cr{font-size:14px;font-weight:800;color:var(--green);margin:2px 0}
+.card .cp{font-size:17px;font-weight:900;color:var(--gold);margin:2px 0 8px}
+.buyBtn{width:100%;padding:8px;border-radius:12px;border:2.5px solid #0c4f12;background:linear-gradient(180deg,#aaff33,#22aa00);
+  color:#fff;font-size:16px;font-weight:900;cursor:pointer;text-shadow:0 1px 0 rgba(0,0,0,.5);box-shadow:0 4px 0 rgba(0,0,0,.4)}
+.buyBtn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.4)}
+.buyBtn:disabled{filter:grayscale(.8) brightness(.7);cursor:not-allowed}
+#wBal{font-size:44px;font-weight:900;color:var(--gold);text-align:center;text-shadow:0 3px 0 rgba(0,0,0,.5);margin:6px 0 2px}
+#wBalSub{text-align:center;color:#aab2bf;font-weight:700;font-size:14px;margin-bottom:12px}
+.wBtns{display:flex;gap:12px;justify-content:center;margin-bottom:14px}
+.wBtn{padding:10px 22px;border-radius:12px;border:2.5px solid rgba(0,0,0,.5);color:#fff;font-size:16px;font-weight:900;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.4);text-shadow:0 1px 0 rgba(0,0,0,.5)}
+.wBtn.dep{background:linear-gradient(180deg,#aaff33,#22aa00)}
+.wBtn.ret{background:linear-gradient(180deg,#ffb340,#e06a00)}
+.wBtn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.4)}
+#txList{border-top:2px solid #262c37;margin-top:6px}
+.tx{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid #262c37;padding:9px 4px;font-size:15px;font-weight:700}
+.tx .td{color:#8b93a1;font-size:12px;font-weight:600;margin-top:1px}
+.tx .amt.tp{color:var(--green)}
+.tx .amt.tn{color:#ff6b6b}
+.refBox{background:#0d1016;border:2px dashed #4a5262;border-radius:12px;padding:12px 14px;font-size:17px;font-weight:800;letter-spacing:.4px;
+  color:#9fdcff;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0}
+.copyBtn{padding:8px 16px;border-radius:10px;border:2.5px solid #0a2f66;background:linear-gradient(180deg,#4fb0f7,#0e4fb0);color:#fff;font-weight:900;font-size:14px;cursor:pointer}
+.refStats{display:flex;gap:14px;margin-top:14px}.refHist{background:#0d1016;border:1.5px solid #262c37;border-radius:12px;padding:10px 13px;display:flex;align-items:center;justify-content:space-between;gap:12px}.refHist-left{flex:1}.refHist-name{font-size:14px;font-weight:800;color:#fff}.refHist-date{font-size:11px;color:#6b7590;margin-top:2px}.refHist-lvl{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;margin-top:3px;display:inline-block}.refHist-amt{font-size:16px;font-weight:900;color:#00ff7a;white-space:nowrap}.refEmpty{font-size:14px;color:#6b7590;text-align:center;padding:20px 0}
+.refStat{flex:1;background:#1a1f29;border:2px solid #39404d;border-radius:14px;padding:14px;text-align:center}
+.refStat .n{font-size:30px;font-weight:900;color:var(--gold)}
+.refStat .l{font-size:13px;font-weight:700;color:#aab2bf;margin-top:2px}
+.refNote{margin-top:14px;font-size:15px;color:#d7dde6;line-height:1.5;background:#101823;border:2px solid #1f3d5e;border-radius:12px;padding:12px 14px}
+.refNote b{color:var(--green)}
+
+/* ---------- COLOCAR TORRE / TOAST / EXTRAS ---------- */
+#placeHint{position:absolute;top:104px;left:50%;transform:translateX(-50%);background:#12151c;border:2.5px solid var(--gold);border-radius:14px;
+  padding:10px 18px;font-size:17px;font-weight:800;color:#fff;display:none;z-index:25;box-shadow:0 8px 18px rgba(0,0,0,.6);text-align:center}
+#placeHint b{color:var(--gold)}
+#placeHint .cancelMini{margin-left:12px;padding:4px 12px;border-radius:9px;border:2px solid #7a1212;background:linear-gradient(180deg,#f45b5b,#c62828);
+  color:#fff;font-weight:900;font-size:13px;cursor:pointer}
+.plot{fill:rgba(255,255,255,.28);stroke:#ffffff;stroke-width:2.5;stroke-dasharray:10 7;cursor:pointer;animation:pulsePlot 1s ease-in-out infinite alternate}
+.plot:hover{fill:rgba(255,240,150,.5)}
+@keyframes pulsePlot{from{opacity:.45}to{opacity:.9}}
+#toast{position:absolute;bottom:106px;left:50%;transform:translateX(-50%);background:#12151c;border:2px solid var(--panelBorder);border-radius:12px;
+  padding:10px 20px;font-size:16px;font-weight:800;color:#fff;opacity:0;transition:opacity .25s;z-index:40;pointer-events:none;white-space:nowrap;box-shadow:0 10px 24px rgba(0,0,0,.28)}
+#toast.show{opacity:1}
+
+
+/* ---------- EFECTOS ---------- */
+#fx{position:absolute;inset:0;pointer-events:none;z-index:35;overflow:hidden}
+.coinF{position:absolute;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe9a3,#f7b500 60%,#c77c00);
+  border:2px solid #8a5a00;color:#7a5200;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 3px rgba(0,0,0,.4)}
+.billF{position:absolute;width:34px;height:18px;border-radius:3px;background:linear-gradient(180deg,#6fdc72,#3aa53e);border:2px solid #1c6b20;
+  color:#0d3b10;font-weight:900;font-size:11px;display:flex;align-items:center;justify-content:center}
+.floatAmt{position:absolute;font-family:'Arial Black',Arial,sans-serif;font-weight:900;font-style:italic;font-size:42px;color:var(--gold);
+  text-shadow:-2px -2px 0 var(--ink),2px -2px 0 var(--ink),-2px 2px 0 var(--ink),2px 2px 0 var(--ink),0 4px 0 var(--ink);
+  animation:floatUp 2.1s ease-out forwards;white-space:nowrap}
+@keyframes floatUp{0%{opacity:0;transform:translateY(18px) scale(.6)}12%{opacity:1;transform:translateY(0) scale(1.08)}25%{transform:scale(1)}100%{opacity:0;transform:translateY(-90px) scale(1)}}
+.spark{position:absolute;font-size:22px;animation:sparkA .95s ease-out forwards;text-shadow:0 0 6px #fff}
+@keyframes sparkA{from{opacity:1;transform:translateY(0) scale(.4)}to{opacity:0;transform:translateY(-52px) scale(1.4)}}
+
+
+/* animaciones de escena */
+.cl{animation:drift 14s ease-in-out infinite alternate}
+.cl2{animation:drift 18s ease-in-out infinite alternate-reverse}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(26px)}}
+.rays{animation:spinR 90s linear infinite}
+@keyframes spinR{to{transform:rotate(360deg)}}
+/* carros y personas removidos */
+/* Nube flotante extra */
+.cl3{animation:drift 22s ease-in-out infinite alternate}
+@keyframes drift3{from{transform:translateX(0)}to{transform:translateX(18px)}}
+/* Pájaros animados */
+.bird{animation:birdFly 18s linear infinite}
+.bird2{animation:birdFly2 24s linear infinite}
+.bird3{animation:birdFly3 14s linear infinite}
+@keyframes birdFly{0%{transform:translate(-100px,0) scaleX(1)}49%{transform:translate(1700px,-60px) scaleX(1)}50%{transform:translate(1700px,-60px) scaleX(-1)}100%{transform:translate(-100px,0) scaleX(-1)}}
+@keyframes birdFly2{0%{transform:translate(1700px,0) scaleX(-1)}49%{transform:translate(-100px,40px) scaleX(-1)}50%{transform:translate(-100px,40px) scaleX(1)}100%{transform:translate(1700px,0) scaleX(1)}}
+@keyframes birdFly3{0%{transform:translate(-100px,20px) scaleX(1)}49%{transform:translate(1700px,-30px) scaleX(1)}50%{transform:translate(1700px,-30px) scaleX(-1)}100%{transform:translate(-100px,20px) scaleX(-1)}}
+/* Helicóptero */
+.heli{animation:heliFloat 20s linear infinite}
+.heliBlade{animation:heliSpin .3s linear infinite}
+@keyframes heliFloat{0%{transform:translate(-200px,0)}100%{transform:translate(1800px,0)}}
+@keyframes heliSpin{to{transform:rotate(360deg)}}
+
+
+/* ---------- SUPABASE AUTH / SESSION ---------- */
+#logoTagline{font-size:11px;font-weight:1000;letter-spacing:2.4px;color:#fff7bb;margin-top:4px;text-shadow:0 2px 2px rgba(0,0,0,.85)}
+#userPill{left:1228px;top:18px;width:292px;min-height:52px;padding:8px 12px;background:rgba(8,10,14,.92);border:2px solid #58657a;border-radius:14px;z-index:14;display:none;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 5px 12px rgba(0,0,0,.45)}
+#userPill .uInfo{min-width:0}.uMail{font-size:12px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:184px}.uRole{font-size:10px;color:#8ef58e;font-weight:900;letter-spacing:1px;margin-top:3px}.logoutBtn{border:1.5px solid #7a3030;background:#3a1518;color:#fff;border-radius:8px;padding:6px 10px;font-size:10px;font-weight:900;cursor:pointer}
+#authGate{position:absolute;inset:0;z-index:100;background:radial-gradient(circle at 50% 38%,rgba(62,20,106,.55),rgba(4,5,9,.91) 65%);display:flex;align-items:center;justify-content:center;color:#fff}
+#authGate.hidden{display:none}
+.authCard{width:490px;background:rgba(13,16,24,.97);border:3px solid #f4f6fa;border-radius:24px;padding:25px 28px 28px;box-shadow:0 24px 70px rgba(0,0,0,.65),0 0 36px rgba(187,68,255,.25)}
+.authBrand{text-align:center;margin-bottom:18px}.authBrand .brand{font-family:'Arial Black',Arial,sans-serif;font-style:italic;font-size:40px;font-weight:1000;line-height:1;text-shadow:0 4px 0 #111}.authBrand .brand .a{color:#a8d4ff}.authBrand .brand .b{color:#d160ff}.authBrand .tag{margin-top:7px;color:#ffe27a;font-size:13px;font-weight:1000;letter-spacing:2px}.authBrand .safe{margin-top:8px;color:#98a7bb;font-size:11px;font-weight:700}
+.authTabs{display:grid;grid-template-columns:1fr 1fr;background:#090c12;border:1.5px solid #283142;border-radius:12px;padding:4px;margin-bottom:14px}.authTab{border:0;border-radius:9px;padding:9px;color:#8792a4;background:transparent;font-weight:900;cursor:pointer}.authTab.active{background:linear-gradient(180deg,#4fb0f7,#1766c5);color:#fff}
+.authField{margin:9px 0}.authField label{display:block;font-size:11px;font-weight:900;color:#aab2bf;margin-bottom:4px;letter-spacing:.4px}.authField input{width:100%;background:#070a10;border:1.5px solid #2d3749;border-radius:10px;color:#fff;font-size:14px;padding:11px 12px;outline:none}.authField input:focus{border-color:#5cbcff;box-shadow:0 0 0 2px rgba(92,188,255,.12)}
+.authSubmit{width:100%;margin-top:10px;padding:12px;border-radius:12px;border:2.5px solid #0c4f12;background:linear-gradient(180deg,#aaff33,#22aa00);color:#fff;font-size:16px;font-weight:1000;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.4);text-shadow:0 1px 0 rgba(0,0,0,.5)}.authSubmit:disabled{filter:grayscale(.7);cursor:wait}.authMsg{min-height:18px;margin-top:10px;text-align:center;font-size:12px;font-weight:800;color:#ffcc00}.authMsg.err{color:#ff7b7b}.authMsg.ok{color:#8ef58e}.regOnly{display:none}.authCard.register .regOnly{display:block}
+.serverDot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#00ff7a;margin-right:5px;box-shadow:0 0 8px rgba(0,255,122,.7)}
+.busy{pointer-events:none;opacity:.7}
+
+</style>
+</head>
+<body>
+<div id="wrap">
+<div id="stage">
+
+  <svg id="scene" viewBox="0 0 1536 1024" preserveAspectRatio="xMidYMid slice"></svg>
+
+  <!-- ======== HUD SUPERIOR ======== -->
+  <div class="hud" id="logo">
+    <svg width="58" height="58" viewBox="0 0 60 60">
+      <g stroke="#14181f" stroke-width="2.5" stroke-linejoin="round">
+        <rect x="4"  y="22" width="12" height="34" fill="#ff1a1a"/>
+        <rect x="17" y="10" width="13" height="46" fill="#00b4ff"/>
+        <rect x="31" y="18" width="12" height="38" fill="#ffbb00"/>
+        <rect x="44" y="28" width="11" height="28" fill="#33cc33"/>
+      </g>
+      <g fill="#fff9e0">
+        <rect x="7" y="26" width="3" height="3"/><rect x="12" y="26" width="3" height="3"/><rect x="7" y="33" width="3" height="3"/><rect x="12" y="33" width="3" height="3"/>
+        <rect x="20" y="14" width="3" height="3"/><rect x="25" y="14" width="3" height="3"/><rect x="20" y="21" width="3" height="3"/><rect x="25" y="21" width="3" height="3"/><rect x="20" y="28" width="3" height="3"/><rect x="25" y="28" width="3" height="3"/>
+        <rect x="34" y="22" width="3" height="3"/><rect x="39" y="22" width="3" height="3"/><rect x="34" y="29" width="3" height="3"/><rect x="39" y="29" width="3" height="3"/>
+        <rect x="47" y="32" width="3" height="3"/><rect x="47" y="39" width="3" height="3"/>
+      </g>
+    </svg>
+    <div><div id="logoTxt"><span class="lg1">METRO</span><span class="lg2">BUILDS</span></div><div id="logoTagline">75-DAY PROPERTY CYCLE</div></div>
+  </div>
+
+  <div class="hud" id="balancePill">
+    <span class="bag">💰</span>
+    <span id="balVal">0.00</span>
+    <span class="cur">USDT</span>
+    <svg width="30" height="30" viewBox="0 0 32 32">
+      <circle cx="16" cy="16" r="15" fill="#26a17b" stroke="#0e5c44" stroke-width="2"/>
+      <path d="M8 9h16v4h-6v2.1c3.6.3 6 1.1 6 2.1 0 1.2-3.5 2.2-8 2.2s-8-1-8-2.2c0-1 2.4-1.8 6-2.1V13H8z" fill="#fff"/>
+      <rect x="14" y="13" width="4" height="11" rx="1" fill="#fff"/>
+    </svg>
+  </div>
+
+  <div class="hud topBtn" id="btnCollect">
+    <div class="l1"><span class="cc">$</span><span>COBRAR GANANCIAS</span></div>
+    <div class="l2" id="collectSub">Compra una propiedad</div>
+  </div>
+
+  <div class="hud topBtn" id="btnWalletTop" aria-hidden="true">
+    <svg width="34" height="26" viewBox="0 0 34 26">
+      <rect x="1" y="1" width="32" height="24" rx="4" fill="#0d3b7a" stroke="#08284f" stroke-width="2"/>
+      <rect x="1" y="6" width="32" height="5" fill="#ffd24a"/>
+      <rect x="5" y="15" width="12" height="3.5" rx="1" fill="#9fdcff"/>
+      <rect x="5" y="20" width="8" height="2.5" rx="1" fill="#5b93c9"/>
+    </svg>
+    <span>BILLETERA</span>
+  </div>
+
+  <!-- ======== PANELES IZQUIERDA ======== -->
+  <div class="hud panel" id="incomePanel">
+    <h3>PRODUCCIÓN DE LA CIUDAD</h3>
+    <div class="row"><span class="lbl">Renta diaria:</span><span class="val" id="incPot">0.00 USDT</span></div>
+    <div class="row"><span class="lbl">Disponible:</span><span class="val" id="incAct"><b>0.00 USDT</b> <span id="incPct">(4%/día)</span></span></div>
+    <div class="row"><span class="lbl">Próximo día en:</span><span class="val" id="incTimer">--:--:--</span></div>
+  </div>
+
+<!-- legendPanel removed -->
+
+<!-- howtoPanel moved to shop modal -->
+
+  <!-- badges de edificios -->
+  <div id="badges"></div>
+
+  <!-- ======== PANEL DETALLE ======== -->
+  <div class="hud panel" id="detailPanel">
+    <div id="dTitle">KIOSCO</div>
+    <svg id="dPrev" viewBox="0 0 300 260"><use id="dUse" href="#sym-kiosco" x="0" y="0"/></svg>
+    <div id="dLevel">INVERSIÓN DESDE 10.00 USDT</div>
+    <hr>
+    <div class="kv"><span class="k">Renta diaria</span><span class="v" id="dRent" style="color:#00ff7a">0.00 USDT</span></div>
+    <div class="kv"><span class="k">Ciclo</span><span class="v" id="dCycle" style="color:#ffcc00">75 días</span></div>
+    <div id="dCalc" style="color:#aab2bf;font-size:12px;text-align:right">4% diario</div>
+    <hr>
+    <div id="dNextWrap"><span class="k">Estado del ciclo:</span><span class="btime ok" id="dNext">DÍA 0 / 75</span></div>
+    <div id="dEarnInfo" style="margin-top:8px;font-size:13px;color:#aab2bf;text-align:center">Produce 4% por cada día completo durante 75 días</div>
+  </div>
+
+  <!-- ======== NAV INFERIOR ======== -->
+  <div class="hud" id="tabs">
+    <div class="tab active" id="tCiudad">
+      <svg width="34" height="30" viewBox="0 0 34 30"><g stroke="#08315e" stroke-width="1.5"><rect x="2" y="12" width="8" height="17" fill="#dfeeff"/><rect x="12" y="4" width="9" height="25" fill="#fff"/><rect x="23" y="15" width="8" height="14" fill="#dfeeff"/></g><g fill="#4fb2f5"><rect x="4" y="15" width="2" height="2"/><rect x="7" y="15" width="2" height="2"/><rect x="4" y="19" width="2" height="2"/><rect x="7" y="19" width="2" height="2"/><rect x="14" y="7" width="2" height="2"/><rect x="17" y="7" width="2" height="2"/><rect x="14" y="11" width="2" height="2"/><rect x="17" y="11" width="2" height="2"/><rect x="14" y="15" width="2" height="2"/><rect x="17" y="15" width="2" height="2"/><rect x="25" y="18" width="2" height="2"/><rect x="28" y="18" width="2" height="2"/></g></svg>
+      <span class="num">1</span><span>CIUDAD</span>
+    </div>
+    <div class="tab" id="tTienda">
+      <svg width="34" height="30" viewBox="0 0 34 30"><g fill="#fff" stroke="#3d0f57" stroke-width="1.6" stroke-linejoin="round"><path d="M4 4h4l3 14h16l3-11H10"/><circle cx="13" cy="24" r="2.6"/><circle cx="24" cy="24" r="2.6"/></g></svg>
+      <span class="num">2</span><span>TIENDA</span>
+    </div>
+    <div class="tab" id="tBill">
+      <svg width="34" height="28" viewBox="0 0 34 28"><rect x="2" y="3" width="28" height="22" rx="4" fill="#8a4a10" stroke="#5c2f06" stroke-width="2"/><rect x="2" y="3" width="28" height="7" rx="3" fill="#a35c18"/><rect x="20" y="12" width="12" height="9" rx="3" fill="#c9781f" stroke="#5c2f06" stroke-width="2"/><circle cx="26" cy="16.5" r="2" fill="#ffd24a"/></svg>
+      <span class="num">3</span><span>BILLETERA</span>
+    </div>
+    <div class="tab" id="tRef">
+      <svg width="40" height="28" viewBox="0 0 40 28"><g stroke="#0c4f12" stroke-width="1.5"><circle cx="10" cy="8" r="4.5" fill="#00b4ff"/><path d="M2 24c0-5 3.6-8 8-8s8 3 8 8" fill="#00b4ff"/><circle cx="30" cy="8" r="4.5" fill="#ffbb00"/><path d="M22 24c0-5 3.6-8 8-8s8 3 8 8" fill="#ffbb00"/><circle cx="20" cy="10" r="5" fill="#fff"/><path d="M11.5 26c0-5.5 3.8-9 8.5-9s8.5 3.5 8.5 9" fill="#fff"/></g></svg>
+      <span class="num">4</span><span>AMIGOS</span>
+    </div>
+  </div>
+
+  <!-- ======== MODALES ======== -->
+  <div class="modal" id="shopModal">
+    <div class="mPanel">
+      <div class="mHead">
+        <div><h2>🛒 TIENDA DE TORRES</h2><div class="sub">Compra una torre y colócala en una parcela verde de tu ciudad.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+            <span style="background:#1a2030;border:1px solid #39404d;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:700;color:#aab2bf">1. Compra una torre</span>
+            <span style="background:#1a2030;border:1px solid #39404d;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:700;color:#aab2bf">2. Colócala en el mapa</span>
+            <span style="background:#1a2030;border:1px solid #39404d;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:700;color:#aab2bf">3. Produce 4% diario</span>
+            <span style="background:#1a2030;border:1px solid #39404d;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:700;color:#aab2bf">4. Cobra cada 24h</span>
+          </div></div>
+        <button class="x" data-close>✕</button>
+      </div>
+      <div id="shopGrid"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="walletModal">
+    <div class="mPanel" style="width:640px">
+      <div class="mHead">
+        <div><h2>👛 BILLETERA</h2><div class="sub">Saldo del juego y movimientos.</div></div>
+        <button class="x" data-close>✕</button>
+      </div>
+      <div id="wBal">0.00 USDT</div>
+      <div id="wBalSub">Saldo disponible</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div style="background:#0d1016;border:2px solid #1f3d5e;border-radius:14px;padding:14px">
+          <div style="font-size:15px;font-weight:900;color:#00ff7a;margin-bottom:8px">⬇ DEPOSITAR</div>
+          <div style="font-size:11px;color:#aab2bf;margin-bottom:10px">Envía USDT BEP-20 y confirma con tu hash. Mínimo $10.</div>
+          <div style="font-size:12px;font-weight:800;color:#aab2bf;margin-bottom:4px">DIRECCIÓN BEP-20</div>
+          <div id="depositAddress" style="background:#070a10;border:1.5px solid #1f3d5e;border-radius:9px;padding:8px;font-family:monospace;font-size:10px;color:#9fdcff;word-break:break-all;margin-bottom:8px;user-select:all">Cargando dirección...</div>
+          <div style="font-size:12px;font-weight:800;color:#aab2bf;margin-bottom:4px">HASH DE TRANSACCIÓN</div>
+          <input id="depHashInput" placeholder="0x..." style="width:100%;background:#070a10;border:1.5px solid #2a3344;border-radius:9px;color:#fff;font-size:13px;padding:8px 10px;margin-bottom:8px;outline:none">
+          <div style="font-size:12px;font-weight:800;color:#aab2bf;margin-bottom:4px">MONTO ENVIADO (USDT)</div>
+          <input id="depAmtInput" type="number" min="10" placeholder="Mínimo $10.00" style="width:100%;background:#070a10;border:1.5px solid #2a3344;border-radius:9px;color:#fff;font-size:13px;padding:8px 10px;margin-bottom:10px;outline:none">
+          <button class="wBtn dep" id="btnDep" style="width:100%">✅ CONFIRMAR</button>
+        </div>
+        <div style="background:#0d1016;border:2px solid #3d1f00;border-radius:14px;padding:14px">
+          <div style="font-size:15px;font-weight:900;color:#ffaa00;margin-bottom:8px">⬆ RETIRAR</div>
+          <div style="font-size:11px;color:#aab2bf;margin-bottom:10px">Mínimo $5 · Revisión manual · Red BEP-20.</div>
+          <div style="font-size:12px;font-weight:800;color:#aab2bf;margin-bottom:4px">TU WALLET BEP-20</div>
+          <input id="retWalletInput" placeholder="0x..." style="width:100%;background:#070a10;border:1.5px solid #2a3344;border-radius:9px;color:#fff;font-size:13px;padding:8px 10px;margin-bottom:8px;outline:none">
+          <div style="font-size:12px;font-weight:800;color:#aab2bf;margin-bottom:4px">MONTO A RETIRAR (USDT)</div>
+          <input id="retAmtInput" type="number" min="5" placeholder="Mínimo $5.00" style="width:100%;background:#070a10;border:1.5px solid #2a3344;border-radius:9px;color:#fff;font-size:13px;padding:8px 10px;margin-bottom:10px;outline:none">
+          <button class="wBtn ret" id="btnRet" style="width:100%">📤 SOLICITAR RETIRO</button>
+          <div style="font-size:10px;color:#6b7590;margin-top:6px;text-align:center">Saldo disponible: <span id="retBalShow" style="color:#ffcc00;font-weight:800">$0.00</span></div>
+        </div>
+      </div>
+      <div id="txList"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="refModal">
+    <div class="mPanel" style="width:640px">
+      <div class="mHead">
+        <div><h2>👥 AMIGOS</h2><div class="sub">Invita amigos y gana comisiones automáticas.</div></div>
+        <button class="x" data-close>✕</button>
+      </div>
+      <div style="font-size:15px;font-weight:700;color:#d7dde6">Tu enlace de invitación:</div>
+      <div class="refBox"><span id="refLink">Tu enlace aparecerá al iniciar sesión</span><button class="copyBtn" id="btnCopy">COPIAR</button></div>
+<!-- Comisiones -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+        <div style="background:#1a1f29;border:2px solid #39404d;border-radius:12px;padding:12px;text-align:center">
+          <div style="font-size:28px;font-weight:900;color:#00ff7a">8%</div>
+          <div style="font-size:12px;font-weight:800;color:#aab2bf;margin-top:4px">Nivel 1</div>
+          <div style="font-size:11px;color:#6b7590;margin-top:2px">Invitado directo</div>
+        </div>
+        <div style="background:#1a1f29;border:2px solid #39404d;border-radius:12px;padding:12px;text-align:center">
+          <div style="font-size:28px;font-weight:900;color:#00b4ff">4%</div>
+          <div style="font-size:12px;font-weight:800;color:#aab2bf;margin-top:4px">Nivel 2</div>
+          <div style="font-size:11px;color:#6b7590;margin-top:2px">Amigo de tu amigo</div>
+        </div>
+        <div style="background:#1a1f29;border:2px solid #39404d;border-radius:12px;padding:12px;text-align:center">
+          <div style="font-size:28px;font-weight:900;color:#ffcc00">2%</div>
+          <div style="font-size:12px;font-weight:800;color:#aab2bf;margin-top:4px">Nivel 3</div>
+          <div style="font-size:11px;color:#6b7590;margin-top:2px">Red ampliada</div>
+        </div>
+      </div>
+      <!-- Stats -->
+      <div class="refStats">
+        <div class="refStat"><div class="n" id="refCount">0</div><div class="l">Amigos activos</div></div>
+        <div class="refStat"><div class="n" id="refEarned" style="color:#00ff7a">$0.00</div><div class="l">USDT ganados</div></div>
+      </div>
+      <!-- Historial de referidos -->
+      <div style="margin-top:16px">
+        <div style="font-size:15px;font-weight:900;color:#fff;margin-bottom:10px;letter-spacing:.5px">📋 HISTORIAL</div>
+        <div id="refHistory" style="display:flex;flex-direction:column;gap:8px">
+          <!-- Se llena con JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="hud" id="userPill">
+    <div class="uInfo"><div class="uMail" id="userMail">—</div><div class="uRole" id="userRole"><span class="serverDot"></span>USUARIO</div></div>
+    <button class="logoutBtn" id="btnLogout">SALIR</button>
+  </div>
+
+  <div id="authGate">
+    <div class="authCard" id="authCard">
+      <div class="authBrand">
+        <div class="brand"><span class="a">METRO</span><span class="b">BUILDS</span></div>
+        <div class="tag">75-DAY PROPERTY CYCLE</div>
+        <div class="safe">🔐 Saldo, compras y cobros verificados por servidor</div>
+      </div>
+      <div class="authTabs">
+        <button class="authTab active" id="authTabLogin">INICIAR SESIÓN</button>
+        <button class="authTab" id="authTabRegister">REGISTRARME</button>
+      </div>
+      <div class="authField regOnly"><label>NOMBRE</label><input id="authName" maxlength="40" placeholder="Tu nombre"></div>
+      <div class="authField"><label>CORREO</label><input id="authEmail" type="email" autocomplete="email" placeholder="correo@ejemplo.com"></div>
+      <div class="authField"><label>CONTRASEÑA</label><input id="authPassword" type="password" autocomplete="current-password" minlength="6" placeholder="••••••••"></div>
+      <div class="authField regOnly"><label>CÓDIGO DE REFERIDO (OPCIONAL)</label><input id="authReferral" maxlength="20" placeholder="Código de tu amigo"></div>
+      <button class="authSubmit" id="authSubmit">ENTRAR A METROBUILDS</button>
+      <div class="authMsg" id="authMsg"></div>
+    </div>
+  </div>
+
+  <!-- ======== EXTRAS ======== -->
+  <div id="placeHint"></div>
+  <div id="fx"></div>
+  <div id="toast"></div>
+  <!-- speed btn removed -->
+
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* =====================================================================
+   MetroBuilds — juego de ciudad en un solo archivo (arte 100% SVG propio)
+   ===================================================================== */
+const $=id=>document.getElementById(id);
+const fmt2=n=>n.toFixed(2);
+function fmtT(s){s=Math.max(0,Math.floor(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;const p=v=>String(v).padStart(2,'0');return p(h)+':'+p(m)+':'+p(x);}
+
+/* ---------- helpers isométricos ---------- */
+const SK=26.565; // atan(0.5)
+const OUT='#151a21';
+function P(pts){return pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');}
+function poly(pts,fill,extra=''){return `<polygon points="${P(pts)}" fill="${fill}" stroke="${OUT}" stroke-width="3" stroke-linejoin="round" ${extra}/>`;}
+function polyNS(pts,fill,extra=''){return `<polygon points="${P(pts)}" fill="${fill}" ${extra}/>`;}
+/* caja isométrica: base frontal en (cx,by), rw hacia la derecha, lw hacia la izquierda, altura h */
+function boxPts(cx,by,rw,lw,h){
+  const F=[cx,by],R=[cx+rw,by-rw*0.5],K=[cx+rw-lw,by-rw*0.5-lw*0.5],L=[cx-lw,by-lw*0.5];
+  const u=p=>[p[0],p[1]-h];
+  return {F,R,K,L,Fu:u(F),Ru:u(R),Ku:u(K),Lu:u(L)};
+}
+function box(cx,by,rw,lw,h,c){
+  const q=boxPts(cx,by,rw,lw,h);
+  return poly([q.L,q.F,q.Fu,q.Lu],c.l)+poly([q.F,q.R,q.Ru,q.Fu],c.r)+poly([q.Fu,q.Ru,q.Ku,q.Lu],c.t);
+}
+/* grupo con plano de cara derecha (origen: esquina F superior) */
+function faceR(cx,topY,inner){return `<g transform="translate(${cx},${topY}) skewY(-${SK})">${inner}</g>`;}
+function faceL(cx,topY,lw,inner){return `<g transform="translate(${cx-lw},${topY-lw*0.5}) skewY(${SK})">${inner}</g>`;}
+/* rejilla de ventanas en coordenadas locales de cara */
+function winGrid(x0,y0,cols,rows,cw,ch,gx,gy,fill,st='#0e1620',sw=2,rx=1.5){
+  let s='';
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)
+    s+=`<rect x="${x0+c*(cw+gx)}" y="${y0+r*(ch+gy)}" width="${cw}" height="${ch}" rx="${rx}" fill="${Array.isArray(fill)?fill[(c+r)%fill.length]:fill}" stroke="${st}" stroke-width="${sw}"/>`;
+  return s;
+}
+
+/* =====================================================================
+   SÍMBOLOS DE EDIFICIOS (base del edificio en 0,0)
+   ===================================================================== */
+function symKiosco(){
+  let s='';
+  s+=box(0,0,46,40,56,{l:'#c9c2b4',r:'#efe9dd',t:'#8f887a'});
+  // puerta y ventana (cara derecha)
+  s+=faceR(0,-56,`<rect x="6" y="14" width="16" height="42" rx="2" fill="#5a4632" stroke="${OUT}" stroke-width="2.5"/>
+    <rect x="26" y="16" width="15" height="16" rx="2" fill="#bfe8ff" stroke="${OUT}" stroke-width="2.5"/>
+    <rect x="24" y="34" width="19" height="5" fill="#8f887a" stroke="${OUT}" stroke-width="2"/>`);
+  s+=faceL(0,-56,40,`<rect x="8" y="16" width="16" height="15" rx="2" fill="#9fd4ef" stroke="${OUT}" stroke-width="2.5"/>`);
+  // toldo a rayas
+  s+=faceR(0,-56,`<g transform="translate(0,10)">
+    <rect x="2" y="-6" width="8.6" height="9" fill="#e5322d"/><rect x="10.6" y="-6" width="8.6" height="9" fill="#fff"/>
+    <rect x="19.2" y="-6" width="8.6" height="9" fill="#e5322d"/><rect x="27.8" y="-6" width="8.6" height="9" fill="#fff"/>
+    <rect x="36.4" y="-6" width="8" height="9" fill="#e5322d"/>
+    <rect x="2" y="-6" width="42.4" height="9" fill="none" stroke="${OUT}" stroke-width="2.5"/></g>`);
+  // techo piramidal rojo
+  const q=boxPts(0,0,46,40,56),A=[q.Fu[0]+3,q.Fu[1]-42];
+  s+=poly([q.Lu,q.Fu,A],'#b3231f')+poly([q.Fu,q.Ru,A],'#e5322d')+poly([q.Ru,q.Ku,A],'#c9281f')+poly([q.Ku,q.Lu,A],'#9c1c17');
+  s+=`<line x1="${A[0]}" y1="${A[1]}" x2="${A[0]}" y2="${A[1]-13}" stroke="${OUT}" stroke-width="3"/><circle cx="${A[0]}" cy="${A[1]-15}" r="4" fill="#ffd24a" stroke="${OUT}" stroke-width="2.5"/>`;
+  return {vb:'-58 -135 122 145',s};
+}
+function symTienda(){
+  let s='';
+  s+=box(0,0,88,62,86,{l:'#b93327',r:'#e64a3c',t:'#3d90d6'});
+  // vitrinas y puerta
+  s+=faceR(0,-86,`<rect x="6" y="34" width="30" height="48" rx="2" fill="#aee5ff" stroke="${OUT}" stroke-width="3"/>
+    <rect x="42" y="34" width="20" height="48" rx="2" fill="#6a4a3a" stroke="${OUT}" stroke-width="3"/>
+    <rect x="66" y="34" width="18" height="30" rx="2" fill="#aee5ff" stroke="${OUT}" stroke-width="3"/>
+    <rect x="0" y="28" width="88" height="5" fill="#fff" stroke="${OUT}" stroke-width="2"/>`);
+  s+=faceL(0,-86,62,`<rect x="8" y="34" width="20" height="26" rx="2" fill="#8ec9e8" stroke="${OUT}" stroke-width="3"/>
+    <rect x="34" y="34" width="20" height="26" rx="2" fill="#8ec9e8" stroke="${OUT}" stroke-width="3"/>`);
+  // letrero TIENDA
+  s+=faceR(0,-86,`<rect x="4" y="4" width="80" height="20" rx="6" fill="#1565c0" stroke="${OUT}" stroke-width="3"/>
+    <text x="44" y="19" text-anchor="middle" font-size="14" font-weight="900" fill="#fff" font-family="Arial Black,Arial" letter-spacing="1">TIENDA</text>`);
+  // brillo del techo azul
+  const q=boxPts(0,0,88,62,86);
+  s+=polyNS([[q.Fu[0]-10,q.Fu[1]-4],[q.Ru[0]-18,q.Ru[1]-1],[q.Ku[0]-6,q.Ku[1]+3],[q.Lu[0]+2,q.Lu[1]]],'rgba(255,255,255,.35)');
+  return {vb:'-78 -125 182 132',s};
+}
+function symOficinas(){
+  let s='';
+  // torre trasera alta
+  s+=box(24,-14,58,44,214,{l:'#164a7c',r:'#2f7cc4',t:'#5aa7e0'});
+  s+=faceR(24,-228,winGrid(5,4,4,7,9,18,3.5,7,'#9fdcff','#0d2a45',2));
+  s+=faceL(24,-228,44,winGrid(5,4,3,7,9,18,4,7,'#5f9ec9','#0d2a45',2));
+  // bloque frontal
+  s+=box(0,0,84,54,140,{l:'#1a5794',r:'#3a8ad4',t:'#6cb4e8'});
+  s+=faceR(0,-140,winGrid(6,32,6,5,10,14,3,6,'#aee5ff','#0d2a45',2));
+  s+=faceL(0,-140,54,winGrid(6,32,4,5,9,14,3.5,6,'#6fa8d4','#0d2a45',2));
+  // banda con letrero OFICINAS
+  s+=faceR(0,-140,`<rect x="0" y="8" width="84" height="20" fill="#0e2a45" stroke="${OUT}" stroke-width="3"/>
+    <text x="42" y="23" text-anchor="middle" font-size="13.5" font-weight="900" fill="#ffd60a" font-family="Arial Black,Arial" letter-spacing="1">OFICINAS</text>`);
+  // remates de azotea
+  s+=box(24,-228,58,44,8,{l:'#0d3a63',r:'#1a5794',t:'#8fd0f2'});
+  s+=box(0,-140,84,54,8,{l:'#0d3a63',r:'#1a5794',t:'#8fd0f2'});
+  return {vb:'-108 -302 254 312',s};
+}
+function symHotel(){
+  let s='';
+  s+=box(0,0,86,64,172,{l:'#e09a12',r:'#ffc63e',t:'#ffe08a'});
+  // ventanas con marco blanco
+  s+=faceR(0,-172,winGrid(8,40,4,5,13,16,5,8,'#7a4d12','#fff',3,2));
+  s+=faceL(0,-172,64,winGrid(8,40,3,5,12,16,6,8,'#5f3c0e','#e8d9b8',3,2));
+  // entrada con toldo rojo
+  s+=faceR(0,-172,`<rect x="30" y="132" width="26" height="40" rx="2" fill="#5a3a12" stroke="${OUT}" stroke-width="3"/>
+    <rect x="24" y="124" width="38" height="10" rx="3" fill="#d92b26" stroke="${OUT}" stroke-width="2.5"/>`);
+  // cartel HOTEL sobre la azotea
+  const q=boxPts(0,0,86,64,172);
+  const bx=q.Fu[0]+2,byy=q.Fu[1]-16;
+  s+=`<g>
+    <line x1="${bx-26}" y1="${byy+18}" x2="${bx-26}" y2="${byy-8}" stroke="${OUT}" stroke-width="4"/>
+    <line x1="${bx+30}" y1="${byy+4}" x2="${bx+30}" y2="${byy-8}" stroke="${OUT}" stroke-width="4"/>
+    <rect x="${bx-42}" y="${byy-44}" width="88" height="38" rx="7" fill="#d92b26" stroke="${OUT}" stroke-width="3.5"/>
+    <rect x="${bx-36}" y="${byy-38}" width="76" height="26" rx="4" fill="#b31d19"/>
+    <text x="${bx+2}" y="${byy-17}" text-anchor="middle" font-size="21" font-weight="900" fill="#fff" font-family="Arial Black,Arial" letter-spacing="2">HOTEL</text>
+  </g>`;
+  return {vb:'-100 -250 200 262',s};
+}
+function symBanco(){
+  let s='';
+  // escalinata
+  s+=box(4,6,96,70,10,{l:'#b8ab90',r:'#e0d4b8',t:'#efe6d2'});
+  // cuerpo
+  s+=box(0,0,92,66,96,{l:'#d9cdb4',r:'#f2ead8',t:'#fbf6ea'});
+  // columnas y puerta (cara derecha)
+  s+=faceR(0,-96,`
+    <rect x="0" y="18" width="92" height="10" fill="#1565c0" stroke="${OUT}" stroke-width="2.5"/>
+    <text x="46" y="26.5" text-anchor="middle" font-size="10.5" font-weight="900" fill="#fff" font-family="Arial Black,Arial" letter-spacing="2">BANCO</text>
+    <rect x="36" y="46" width="20" height="50" fill="#4a3a28" stroke="${OUT}" stroke-width="2.5"/>
+    ${[6,26,62,80].map(x=>`<rect x="${x}" y="32" width="8" height="60" fill="#fffdf5" stroke="${OUT}" stroke-width="2.5"/><rect x="${x-2}" y="30" width="12" height="5" fill="#e0d4b8" stroke="${OUT}" stroke-width="2"/><rect x="${x-2}" y="90" width="12" height="5" fill="#e0d4b8" stroke="${OUT}" stroke-width="2"/>`).join('')}
+  `);
+  s+=faceL(0,-96,66,winGrid(8,40,3,2,14,18,6,12,'#3f658a','#fffdf5',3,2));
+  // frontón triangular
+  s+=faceR(0,-96,`<polygon points="-2,18 94,18 46,-14" fill="#f7f0df" stroke="${OUT}" stroke-width="3" stroke-linejoin="round"/>`);
+  // arbustos de azotea
+  const q=boxPts(0,0,92,66,96);
+  s+=`<circle cx="${q.Lu[0]+12}" cy="${q.Lu[1]+2}" r="9" fill="#2f9e2f" stroke="${OUT}" stroke-width="2.5"/>
+      <circle cx="${q.Ku[0]+16}" cy="${q.Ku[1]+8}" r="8" fill="#3fb93f" stroke="${OUT}" stroke-width="2.5"/>
+      <circle cx="${q.Ru[0]-8}" cy="${q.Ru[1]-2}" r="8" fill="#2f9e2f" stroke="${OUT}" stroke-width="2.5"/>`;
+  // tambor + cúpula azul
+  const cx=q.Fu[0]-14, top=q.Fu[1]-26;
+  s+=`<g>
+    <rect x="${cx-26}" y="${top-20}" width="52" height="24" fill="#efe6d2" stroke="${OUT}" stroke-width="3"/>
+    <ellipse cx="${cx}" cy="${top+4}" rx="26" ry="9" fill="#e0d4b8" stroke="${OUT}" stroke-width="3"/>
+    <ellipse cx="${cx}" cy="${top-20}" rx="26" ry="9" fill="#f7f0df" stroke="${OUT}" stroke-width="3"/>
+    <path d="M ${cx-26} ${top-20} A 26 30 0 0 1 ${cx+26} ${top-20}" fill="#3f8fd9" stroke="${OUT}" stroke-width="3.5"/>
+    <path d="M ${cx-26} ${top-20} A 26 30 0 0 1 ${cx+26} ${top-20}" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="5" stroke-dasharray="2 14"/>
+    <path d="M ${cx-13} ${top-22} A 13 28 0 0 1 ${cx+13} ${top-22}" fill="none" stroke="#1d64a8" stroke-width="2.5"/>
+    <line x1="${cx}" y1="${top-50}" x2="${cx}" y2="${top-60}" stroke="${OUT}" stroke-width="3.5"/>
+    <circle cx="${cx}" cy="${top-62}" r="4.5" fill="#ffd24a" stroke="${OUT}" stroke-width="2.5"/>
+  </g>`;
+  return {vb:'-108 -230 224 252',s};
+}
+function symMetroplaza(){
+  let s='';
+  const NE=['#39ff6e','#00e5ff','#ffd60a','#ff4fd8'];
+  // torre izquierda
+  s+=box(-78,-6,44,40,236,{l:'#0c1c30',r:'#14304e',t:'#1d4d6b'});
+  s+=faceR(-78,-242,winGrid(5,10,3,11,9,14,4,6,NE,'#06121f',1.5));
+  s+=box(-78,-242,44,40,8,{l:'#0b8f66',r:'#12c98c',t:'#3ff2b8'});
+  // torre derecha
+  s+=box(92,4,42,36,196,{l:'#0c1c30',r:'#14304e',t:'#1d4d6b'});
+  s+=faceR(92,-192,winGrid(5,10,3,9,8.5,13,4,6,NE,'#06121f',1.5));
+  s+=box(92,-192,42,36,8,{l:'#0b8f66',r:'#12c98c',t:'#3ff2b8'});
+  // torre principal
+  s+=box(0,0,74,58,330,{l:'#0e2238',r:'#16324f',t:'#1f5573'});
+  s+=faceR(0,-330,winGrid(6,8,4,15,11,14,5,6.5,NE,'#06121f',1.8));
+  s+=faceL(0,-330,58,winGrid(6,8,3,15,10,14,6,6.5,'#0d3350','#06121f',1.8));
+  s+=box(0,-330,74,58,10,{l:'#0b8f66',r:'#12c98c',t:'#3ff2b8'});
+  // antena
+  s+=`<line x1="-8" y1="-340" x2="-8" y2="-376" stroke="${OUT}" stroke-width="4"/><circle cx="-8" cy="-379" r="4.5" fill="#ff3b30" stroke="${OUT}" stroke-width="2.5"/>`;
+  // podio de entrada
+  s+=box(6,16,96,74,30,{l:'#1a2b3d',r:'#253c54',t:'#31506b'});
+  s+=faceR(6,-14,`<rect x="26" y="4" width="44" height="26" rx="3" fill="#12060f" stroke="#ff2ea6" stroke-width="2.5"/><rect x="32" y="9" width="32" height="16" fill="#ff2ea6" opacity=".28"/>`);
+  // letrero neón METRO PLAZA
+  s+=`<g filter="url(#glow)">
+    <rect x="-64" y="-236" width="128" height="86" rx="12" fill="#0b0f1a" stroke="#25e9ff" stroke-width="3.5"/>
+    <text x="0" y="-198" text-anchor="middle" font-size="30" font-weight="900" fill="#ff2ea6" font-family="Arial Black,Arial" letter-spacing="1">METRO</text>
+    <text x="0" y="-165" text-anchor="middle" font-size="30" font-weight="900" fill="#25e9ff" font-family="Arial Black,Arial" letter-spacing="1">PLAZA</text>
+  </g>`;
+  return {vb:'-135 -400 262 428',s};
+}
+const SYMS={kiosco:symKiosco,tienda:symTienda,oficinas:symOficinas,hotel:symHotel,banco:symBanco,metroplaza:symMetroplaza};
+
+/* ---------- decoración ---------- */
+function treeSVG(x,y,sc=1){
+  return `<g transform="translate(${x},${y}) scale(${sc})">
+    <rect x="-4" y="-16" width="8" height="18" rx="2" fill="#7a4a21" stroke="${OUT}" stroke-width="2.5"/>
+    <ellipse cx="0" cy="-34" rx="21" ry="19" fill="#2f9e2f" stroke="${OUT}" stroke-width="3"/>
+    <ellipse cx="-6" cy="-42" rx="14" ry="12" fill="#3fb93f"/>
+    <ellipse cx="7" cy="-30" rx="10" ry="8" fill="#55d055"/>
+  </g>`;
+}
+// carSVG removed
+// personSVG removed
+/* =====================================================================
+   ESCENA: cielo + suelo isométrico
+   ===================================================================== */
+const CX=768, CY=300, PIT=165, PITY=82.5, BHW=124, BHH=62;
+const cellXY=(i,j)=>[CX+(i-j)*PIT, CY+(i+j)*PITY];
+function diamond(x,y,hw,hh){return [[x,y-hh],[x+hw,y],[x,y+hh],[x-hw,y]];}
+function allCells(){
+  const out=[];
+  for(let i=0;i<=7;i++)for(let j=0;j<=7;j++){
+    const s=i+j; if(s<1||s>7) continue;
+    const [x,y]=cellXY(i,j);
+    if(x<-40||x>1576||y<370||y>905) continue;
+    out.push({i,j,x,y});
+  }
+  return out;
+}
+function skySVG(){
+  let s=`<defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3c0f7a"/><stop offset=".35" stop-color="#8a1fb0"/>
+      <stop offset=".62" stop-color="#e9219a"/><stop offset=".85" stop-color="#ff7a3c"/><stop offset="1" stop-color="#ffb347"/>
+    </linearGradient>
+    <radialGradient id="sunG" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#fff7c0"/><stop offset=".45" stop-color="#ffd24a"/><stop offset="1" stop-color="#ff9430"/>
+    </radialGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="groundClip"><rect x="0" y="336" width="1536" height="700"/></clipPath>
+  </defs>`;
+  s+=`<rect x="0" y="0" width="1536" height="560" fill="url(#sky)"/>`;
+  // rayos
+  let rays='';
+  for(let a=0;a<360;a+=24) rays+=`<polygon points="0,0 ${520*Math.cos((a-5)*Math.PI/180)},${520*Math.sin((a-5)*Math.PI/180)} ${520*Math.cos((a+5)*Math.PI/180)},${520*Math.sin((a+5)*Math.PI/180)}" fill="rgba(255,215,90,.20)"/>`;
+  s+=`<g transform="translate(1005,185)"><g class="rays" style="transform-origin:0 0">${rays}</g>
+      <circle r="86" fill="url(#sunG)" opacity=".95"/><circle r="60" fill="#fff2b0" opacity=".9"/></g>`;
+  s+=`<polygon points="0,0 620,0 0,340" fill="rgba(255,46,166,.14)"/><polygon points="1536,0 900,0 1536,300" fill="rgba(122,31,178,.20)"/>`;
+  // silueta de ciudad
+  const hs=[70,110,85,140,95,120,74,150,100,88,130,78,118,92,142,80,108,96,126,84];
+  let sk1='M0,352 ';
+  hs.forEach((h,k)=>{const x=k*81;sk1+=`L${x},${352-h} L${x+62},${352-h} L${x+62},352 `;});
+  sk1+='L1620,352 L1620,420 L0,420 Z';
+  s+=`<path d="${sk1}" fill="#3a1566" opacity=".9"/>`;
+  let wins='';
+  hs.forEach((h,k)=>{const x=k*81;for(let r=0;r<Math.floor(h/26);r++)for(let c=0;c<3;c++)wins+=`<rect x="${x+10+c*18}" y="${352-h+10+r*24}" width="7" height="9" fill="#ffd24a" opacity="${(k*7+r*3+c)%3?0.55:0.15}"/>`;});
+  s+=wins;
+  const hs2=[60,95,72,118,64,102,80,60,112,70,96,58,88,66,104,76];
+  let sk2='M0,372 ';
+  hs2.forEach((h,k)=>{const x=k*101-30;sk2+=`L${x},${372-h} L${x+80},${372-h} L${x+80},372 `;});
+  sk2+='L1620,372 L1620,430 L0,430 Z';
+  s+=`<path d="${sk2}" fill="#2a0d52"/>`;
+  // nubes
+  const cloud=(x,y,sc,cls)=>`<g transform="translate(${x},${y}) scale(${sc})"><g class="${cls}" fill="#ffffff" opacity=".96">
+    <ellipse cx="0" cy="0" rx="42" ry="24"/><ellipse cx="-34" cy="8" rx="26" ry="16"/><ellipse cx="34" cy="8" rx="28" ry="17"/><ellipse cx="6" cy="-14" rx="24" ry="15"/></g></g>`;
+  s+=cloud(120,140,1,'cl')+cloud(320,92,.8,'cl2')+cloud(700,150,.9,'cl')+cloud(880,90,.65,'cl2')+cloud(1230,150,.95,'cl')+cloud(1440,95,.7,'cl2')+cloud(520,110,.6,'cl');
+  return s;
+}
+function groundSVG(){
+  let s=`<g clip-path="url(#groundClip)">`;
+  s+=`
+    <defs>
+      <linearGradient id="grassFade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#76d83d"/>
+        <stop offset="1" stop-color="#4fae2a"/>
+      </linearGradient>
+      <linearGradient id="fieldShade" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#a6eb72"/>
+        <stop offset="1" stop-color="#7cd94b"/>
+      </linearGradient>
+      <linearGradient id="roadTone" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#49535d"/>
+        <stop offset="1" stop-color="#38414a"/>
+      </linearGradient>
+      <linearGradient id="hazeG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="rgba(160,255,120,.55)"/>
+        <stop offset="1" stop-color="rgba(160,255,120,0)"/>
+      </linearGradient>
+    </defs>`;
+  s+=`<path d="M0,365 C110,325 220,332 318,355 C438,382 530,354 640,338 C760,320 860,330 968,356 C1080,382 1192,360 1292,334 C1396,306 1478,322 1536,348 L1536,1024 L0,1024 Z" fill="#4ca42a"/>`;
+  s+=`<path d="M0,388 C126,346 232,360 332,380 C460,406 560,374 668,360 C790,344 912,360 1016,386 C1140,416 1244,392 1344,364 C1440,338 1498,348 1536,366 L1536,1024 L0,1024 Z" fill="url(#grassFade)"/>`;
+  s+=`<rect x="0" y="382" width="1536" height="654" fill="#56b92d" opacity=".34"/>`;
+  s+=`<rect x="0" y="315" width="1536" height="110" fill="url(#hazeG)" opacity=".75"/>`;
+  // masa gris de calles
+  s+=polyNS(diamond(CX,CY+4*PITY,5.6*PIT,5.6*PITY),'url(#roadTone)');
+  s+=polyNS(diamond(CX,CY+4*PITY,5.6*PIT,5.6*PITY),'rgba(255,255,255,.06)',`stroke="rgba(255,255,255,.08)" stroke-width="2"`);
+  // líneas amarillas centrales de las calles
+  let dash='';
+  for(let k=0;k<=7;k++){
+    const a=cellXY(-1,k-0.5), b=cellXY(8,k-0.5);
+    dash+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#ffd23f" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="18 16" opacity=".95"/>`;
+    const c=cellXY(k-0.5,-1), d=cellXY(k-0.5,8);
+    dash+=`<line x1="${c[0]}" y1="${c[1]}" x2="${d[0]}" y2="${d[1]}" stroke="#ffd23f" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="18 16" opacity=".95"/>`;
+  }
+  s+=dash;
+  // manzanas de césped premium
+  allCells().forEach(c=>{
+    s+=poly(diamond(c.x,c.y,BHW,BHH),'#83db4f',`data-cell="${c.i},${c.j}"`);
+    s+=polyNS(diamond(c.x,c.y,BHW-14,BHH-7),'url(#fieldShade)');
+    s+=polyNS(diamond(c.x,c.y,BHW-26,BHH-14),'rgba(255,255,255,.07)');
+    s+=polyNS([[c.x-BHW+18,c.y],[c.x,c.y-BHH+9],[c.x+BHW-52,c.y+17]],'rgba(255,255,255,.11)');
+  });
+  // chispas de césped
+  for(let x=22;x<1510;x+=118){
+    s+=`<path d="M${x},${430+(x%5)*74} l16,8" stroke="#ffd23f" stroke-width="4" stroke-linecap="round" opacity=".9"/>`;
+  }
+  // fila de arbustos en el horizonte
+  let bush='';
+  for(let x=-10;x<1560;x+=42) bush+=`<circle cx="${x}" cy="${340+((x/42)%3)*4}" r="${22+((x/42)%2)*6}" fill="${(x/42)%2?'#2f8f2f':'#37a337'}" stroke="${OUT}" stroke-width="2.5"/>`;
+  s=`<g opacity=".98">${bush}</g>`+s+`</g>`;
+  return `<g>${s}</g>`;
+}
+/* moneyPile removed */
+/* =====================================================================
+   METROBUILDS — ESTADO REAL CON SUPABASE
+   La UI puede ser manipulada visualmente en DevTools, pero el servidor es
+   la única autoridad sobre saldo, compras, cobros, depósitos y retiros.
+   ===================================================================== */
+
+const SUPABASE_URL='https://dkofzqkafavydacqbkfk.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_eA_A_L5Jfw_GN2dODOo71w_JoJrJQxK';
+const sb=window.supabase?.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{
+  auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
+});
+
+const TYPES={
+  kiosco:{name:'Kiosco',rent:0.40,price:10,badgeDy:-118},
+  tienda:{name:'Tienda Local',rent:1.00,price:25,badgeDy:-135},
+  oficinas:{name:'Oficinas',rent:3.20,price:80,badgeDy:-268},
+  hotel:{name:'Hotel',rent:6.00,price:150,badgeDy:-232},
+  banco:{name:'Banco',rent:8.00,price:200,badgeDy:-205},
+  metroplaza:{name:'MetroPlaza',rent:20.00,price:500,badgeDy:-372}
+};
+const DAY_MS=86400000;
+let demoUid=0;
+function mkDemo(type,cell,off){return {id:'demo'+(++demoUid),type,cell,off:off||[0,0],demo:true,server:null};}
+const DEMO_BUILDINGS=[
+  mkDemo('metroplaza',[1,2],[0,-6]),mkDemo('oficinas',[2,1],[-14,0]),mkDemo('hotel',[3,1],[6,4]),
+  mkDemo('tienda',[0,3],[8,2]),mkDemo('banco',[3,2],[20,6]),mkDemo('kiosco',[2,4],[64,-2])
+];
+const S={
+  user:null,profile:null,config:null,bal:0,reserved:0,placing:null,placingBusy:false,sel:null,
+  buildings:[...DEMO_BUILDINGS],tx:[],deposits:[],withdrawals:[],refNetwork:[],refRewards:[],loading:false
+};
+S.sel=S.buildings[S.buildings.length-1]?.id||null;
+const bXY=b=>{const [x,y]=cellXY(b.cell[0],b.cell[1]);return [x+b.off[0],y+b.off[1]+BHH*0.35];};
+const num=v=>Number(v||0);
+const safeHtml=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const when=v=>{try{return new Date(v).toLocaleString('es',{dateStyle:'short',timeStyle:'short'});}catch{return ''}};
+
+/* =====================================================================
+   CONSTRUCCIÓN DE LA ESCENA
+   ===================================================================== */
+const scene=$('scene');
+const SYMD={};
+function birdsHeliSVG(){
+  return `
+<g class="bird"><path d="M0,180 Q5,175 10,180 Q15,185 20,180" fill="none" stroke="#14181f" stroke-width="3" stroke-linecap="round"/></g>
+<g class="bird2"><path d="M200,140 Q204,136 208,140 Q212,144 216,140" fill="none" stroke="#14181f" stroke-width="2.5" stroke-linecap="round"/></g>
+<g class="bird3"><path d="M300,220 Q306,214 312,220 Q318,226 324,220" fill="none" stroke="#14181f" stroke-width="2" stroke-linecap="round"/></g>
+<g class="heli">
+  <ellipse cx="50" cy="120" rx="28" ry="11" fill="#2a2a3a" stroke="#14181f" stroke-width="2"/>
+  <ellipse cx="58" cy="115" rx="16" ry="9" fill="#3a3a5a" stroke="#14181f" stroke-width="1.5"/>
+  <ellipse cx="62" cy="115" rx="10" ry="7" fill="#9fdcff" opacity=".7" stroke="#14181f" stroke-width="1.5"/>
+  <line x1="22" y1="120" x2="0" y2="115" stroke="#2a2a3a" stroke-width="5" stroke-linecap="round"/>
+  <g style="transform-origin:50px 107px" class="heliBlade">
+    <line x1="10" y1="107" x2="90" y2="107" stroke="#666" stroke-width="3" stroke-linecap="round"/>
+    <line x1="50" y1="77" x2="50" y2="137" stroke="#666" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <circle cx="76" cy="118" r="3" fill="#ffee44" opacity=".9"/>
+  <line x1="32" y1="130" x2="72" y2="130" stroke="#555" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="50,75 66,80 50,85" fill="#ff4444" stroke="#14181f" stroke-width="1" transform="translate(0,18)"/>
+</g>`;
+}
+function buildScene(){
+  let defs='';
+  for(const k in SYMS){
+    const r=SYMS[k]();
+    const [mx,my,w,h]=r.vb.split(' ').map(Number);
+    SYMD[k]={vb:r.vb,mx,my,w,h};
+    defs+=`<symbol id="sym-${k}" viewBox="${r.vb}" overflow="visible">${r.s}</symbol>`;
+  }
+  scene.innerHTML=skySVG()+`<defs>${defs}</defs>`+groundSVG()+`<g id="plotLayer"></g><g id="objLayer"></g>`+birdsHeliSVG();
+  renderObjects();
+}
+const TREES=[[0,1,-70,10],[1,0,60,14],[0,2,70,20],[1,1,-80,26],[2,0,-60,30],[0,4,-60,8],[1,4,-70,24],[2,2,-84,20],[2,2,70,26],[4,1,70,20],[1,5,20,10],[2,5,-40,16],[3,4,60,18],[4,3,-70,22],[0,5,60,6],[3,0,10,-30],[4,0,-18,6],[5,0,66,20],[5,1,-80,20],[5,2,92,18],[4,4,74,20],[3,5,-88,18],[2,6,64,16],[1,6,-72,14],[0,6,58,12],[6,0,42,22],[6,1,-54,10],[5,3,-26,14],[4,5,86,10],[3,6,-30,18],[2,7,-18,12],[1,7,-96,18],[0,7,84,18],[6,2,82,24],[6,3,-86,18],[5,4,24,24],[4,6,-66,16],[3,7,52,14]];
+
+/* ---------- Visual layout only (NO financial data is stored locally) ---------- */
+function layoutKey(){return S.user?'metrobuilds_layout_'+S.user.id:null;}
+function readLayout(){try{return JSON.parse(localStorage.getItem(layoutKey())||'{}')}catch{return {}}}
+function writeLayout(v){try{if(layoutKey())localStorage.setItem(layoutKey(),JSON.stringify(v))}catch{}}
+function usableCells(){return allCells().filter(c=>!(c.x>1180&&c.y<860)&&c.y>430);}
+function mapServerBuildings(rows){
+  const saved=readLayout(),used=new Set(),cells=usableCells();
+  const out=[];
+  rows.forEach((r,idx)=>{
+    let cell=null,off=[0,0];
+    const sv=saved[r.id];
+    if(sv&&Array.isArray(sv.cell)){
+      const key=sv.cell.join(',');
+      if(cells.some(c=>c.i===sv.cell[0]&&c.j===sv.cell[1])&&!used.has(key)){cell=sv.cell;off=Array.isArray(sv.off)?sv.off:[0,0];}
+    }
+    if(!cell){
+      const c=cells.find(x=>!used.has(x.i+','+x.j))||cells[idx%Math.max(1,cells.length)];
+      if(c)cell=[c.i,c.j]; else cell=[0,1];
+    }
+    used.add(cell.join(','));
+    saved[r.id]={cell,off};
+    out.push({id:r.id,type:r.building_id,cell,off,server:r,demo:false});
+  });
+  writeLayout(saved);
+  return out;
+}
+function savePosition(id,cell,off=[0,0]){const v=readLayout();v[id]={cell,off};writeLayout(v);}
+
+/* ---------- Time / production derived from server timestamps ---------- */
+function elapsedDays(b){
+  if(!b?.server)return 0;
+  const p=new Date(b.server.purchased_at).getTime();
+  const e=new Date(b.server.expires_at).getTime();
+  const now=Math.min(Date.now(),e);
+  return Math.max(0,Math.min(num(b.server.cycle_days)||75,Math.floor((now-p)/DAY_MS)));
+}
+function availableDays(b){if(!b?.server)return 0;return Math.max(0,elapsedDays(b)-num(b.server.claimed_days));}
+function dailyRent(b){return b?.server?num(b.server.purchase_price)*num(b.server.daily_rate):TYPES[b.type].rent;}
+function availableAmount(b){return dailyRent(b)*availableDays(b);}
+function nextClaimSeconds(b){
+  if(!b?.server||num(b.server.claimed_days)>=num(b.server.cycle_days))return Infinity;
+  if(availableDays(b)>0)return 0;
+  const p=new Date(b.server.purchased_at).getTime();
+  const next=p+(num(b.server.claimed_days)+1)*DAY_MS;
+  return Math.max(0,(next-Date.now())/1000);
+}
+function cityDailyIncome(){return S.buildings.filter(b=>b.server&&elapsedDays(b)<num(b.server.cycle_days)).reduce((a,b)=>a+dailyRent(b),0);}
+function cityAvailable(){return S.buildings.reduce((a,b)=>a+availableAmount(b),0);}
+
+/* ---------- objects / badges ---------- */
+function renderObjects(){
+  const objs=[];
+  S.buildings.forEach(b=>{
+    const [x,y]=bXY(b),d=SYMD[b.type]; if(!d)return;
+    const opacity=b.demo?.72:1;
+    objs.push({y,s:`<g class="bld" data-id="${b.id}" style="cursor:pointer;opacity:${opacity}"><use href="#sym-${b.type}" x="${x+d.mx}" y="${y+d.my}" width="${d.w}" height="${d.h}"/></g>`});
+  });
+  TREES.forEach(t=>{const [x,y]=cellXY(t[0],t[1]);objs.push({y:y+t[3],s:treeSVG(x+t[2],y+t[3],0.9+((t[0]+t[1])%3)*0.12)});});
+  objs.sort((a,b)=>a.y-b.y);
+  $('objLayer').innerHTML=objs.map(o=>o.s).join('');
+  renderBadges();
+}
+function renderBadges(){
+  const box=$('badges');box.innerHTML='';
+  S.buildings.forEach(b=>{
+    const [x,y]=bXY(b),el=document.createElement('div');
+    el.className='badge hud'+(S.sel===b.id?' sel':'');el.id='bd_'+b.id;el.style.left=x+'px';el.style.top=(y+TYPES[b.type].badgeDy)+'px';
+    el.innerHTML=`<div class="bname">${TYPES[b.type].name}</div><div class="brow"><span class="pct" style="font-size:11px;color:#00ff7a;font-weight:800"></span></div><div class="brent">Renta: <b></b> USDT/día</div><div class="btime"></div><div class="tail"></div>`;
+    el.addEventListener('click',()=>select(b.id));box.appendChild(el);
+  });updateBadges();
+}
+function updateBadges(){
+  S.buildings.forEach(b=>{
+    const el=$('bd_'+b.id);if(!el)return;const pct=el.querySelector('.pct'),t=el.querySelector('.btime');
+    el.querySelector('.brent b').textContent=fmt2(dailyRent(b));
+    if(b.demo){pct.textContent='VISTA PREVIA';pct.style.color='#ffe27a';t.textContent='Inicia sesión';t.classList.remove('ok');return;}
+    const cyc=num(b.server.cycle_days)||75,day=elapsedDays(b),claimed=num(b.server.claimed_days),av=availableDays(b);
+    if(claimed>=cyc){pct.textContent='✅ COMPLETADO';pct.style.color='#9fdcff';t.textContent='75 / 75 días';t.classList.add('ok');}
+    else if(av>0){pct.textContent='💰 COBRO LISTO';pct.style.color='#00ff7a';t.textContent=`DÍA ${day} / ${cyc} · +${fmt2(availableAmount(b))}`;t.classList.add('ok');}
+    else{pct.textContent='🏢 ACTIVA';pct.style.color='#00ff7a';t.textContent=`DÍA ${day} / ${cyc} · ${fmtT(nextClaimSeconds(b))}`;t.classList.remove('ok');}
+  });
+}
+function select(id){S.sel=id;document.querySelectorAll('.badge').forEach(e=>e.classList.toggle('sel',e.id==='bd_'+id));renderDetail();}
+function renderDetail(){
+  const b=S.buildings.find(x=>x.id===S.sel);if(!b)return;const T=TYPES[b.type];
+  $('dTitle').textContent=T.name.toUpperCase();$('dUse').setAttribute('href','#sym-'+b.type);
+  $('dLevel').textContent=b.demo?'INVERSIÓN DESDE '+fmt2(T.price)+' USDT':'PROPIEDAD ACTIVA · '+fmt2(num(b.server.purchase_price))+' USDT';
+  $('dRent').textContent=fmt2(dailyRent(b))+' USDT/día';
+  const cyc=b.demo?75:num(b.server.cycle_days)||75,day=b.demo?0:elapsedDays(b),claimed=b.demo?0:num(b.server.claimed_days),av=b.demo?0:availableDays(b);
+  const dc=$('dCycle');if(dc)dc.textContent=cyc+' días';
+  if(b.demo){$('dNext').textContent='75-DAY CYCLE';$('dEarnInfo').textContent='Inicia sesión para desbloquear esta propiedad y empezar a producir.';return;}
+  if(claimed>=cyc){$('dNext').textContent='COMPLETADO · 75 / 75';$('dEarnInfo').textContent=`Total producido: ${fmt2(num(b.server.total_claimed))} USDT`;}
+  else if(av>0){$('dNext').textContent=`DÍA ${day} / ${cyc} · ${av} día${av===1?'':'s'} listo${av===1?'':'s'}`;$('dEarnInfo').textContent=`Disponible: ${fmt2(availableAmount(b))} USDT · Cobrado ${claimed}/${cyc}`;}
+  else{$('dNext').textContent=`DÍA ${day} / ${cyc} · ${fmtT(nextClaimSeconds(b))}`;$('dEarnInfo').textContent=`Cobrado ${claimed}/${cyc} días · 4% por día completo`;}
+}
+function renderIncome(){
+  const p=cityDailyIncome(),a=cityAvailable();$('incPot').textContent=fmt2(p)+' USDT';
+  $('incAct').innerHTML=`<b style="color:#00ff7a">${fmt2(a)} USDT</b> <span id="incPct" style="color:#aab2bf">(4%/día · 75 días)</span>`;
+  $('balVal').textContent=fmt2(S.bal);$('wBal').textContent=fmt2(S.bal)+' USDT';
+  const waits=S.buildings.filter(b=>b.server&&num(b.server.claimed_days)<num(b.server.cycle_days)).map(nextClaimSeconds);
+  const minWait=waits.length?Math.min(...waits):Infinity;$('incTimer').textContent=minWait===Infinity?'—':(minWait<=0?'LISTO':fmtT(minWait));
+  const sub=$('collectSub'),btn=$('btnCollect');
+  if(a>0){sub.innerHTML=`<b>${fmt2(a)} USDT disponibles</b>`;btn.classList.add('ready');}
+  else if(minWait<Infinity){sub.innerHTML='Listo en: <b>'+fmtT(minWait)+'</b>';btn.classList.remove('ready');}
+  else{sub.innerHTML='<b>Compra una propiedad</b>';btn.classList.remove('ready');}
+}
+
+/* ---------- effects ---------- */
+function sparkle(x,y){for(let i=0;i<9;i++){const el=document.createElement('div');el.className='spark';el.textContent=['✨','⭐','💫'][i%3];el.style.left=(x-40+Math.random()*80)+'px';el.style.top=(y-20+Math.random()*70)+'px';el.style.animationDelay=(Math.random()*.25)+'s';$('fx').appendChild(el);setTimeout(()=>el.remove(),1400);}}
+function burst(amt){
+  if(!(amt>0))return;const ox=1180,oy=850,f=document.createElement('div');f.className='floatAmt';f.textContent='+'+fmt2(amt)+' USDT';f.style.left=(ox-130)+'px';f.style.top=(oy-80)+'px';$('fx').appendChild(f);setTimeout(()=>f.remove(),2200);
+  const parts=[];for(let i=0;i<26;i++){const el=document.createElement('div'),coin=Math.random()<.55;el.className=coin?'coinF':'billF';el.textContent=coin?'$':'USDT';el.style.left=ox+'px';el.style.top=oy+'px';$('fx').appendChild(el);parts.push({el,x:ox+(Math.random()*40-20),y:oy,vx:(Math.random()*10-5),vy:-(7+Math.random()*9),r:Math.random()*360,vr:Math.random()*16-8});}
+  let t0=null;function step(ts){if(!t0)t0=ts;const done=(ts-t0)>1700;parts.forEach(p=>{p.vy+=.42;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.el.style.transform=`translate(${p.x-1180}px,${p.y-850}px) rotate(${p.r}deg)`;p.el.style.opacity=done?0:1;});if(!done)requestAnimationFrame(step);else setTimeout(()=>parts.forEach(p=>p.el.remove()),250);}requestAnimationFrame(step);
+}
+function horaTxt(){return new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});}
+
+/* =====================================================================
+   SUPABASE DATA
+   ===================================================================== */
+async function loadGameData({quiet=false}={}){
+  if(!S.user||!sb)return;S.loading=true;
+  try{
+    const [pr,wa,cf,ub,tr,dp,wd]=await Promise.all([
+      sb.from('profiles').select('id,email,display_name,referral_code,role,created_at').eq('id',S.user.id).single(),
+      sb.from('wallets').select('*').eq('user_id',S.user.id).single(),
+      sb.from('app_config').select('*').eq('id',1).single(),
+      sb.from('user_buildings').select('*').eq('user_id',S.user.id).order('purchased_at',{ascending:true}),
+      sb.from('transactions').select('*').eq('user_id',S.user.id).order('created_at',{ascending:false}).limit(60),
+      sb.from('deposits').select('*').eq('user_id',S.user.id).order('created_at',{ascending:false}).limit(20),
+      sb.from('withdrawals').select('*').eq('user_id',S.user.id).order('created_at',{ascending:false}).limit(20)
+    ]);
+    const firstErr=[pr,wa,cf,ub,tr,dp,wd].find(x=>x.error)?.error;if(firstErr)throw firstErr;
+    S.profile=pr.data;S.config=cf.data;S.bal=num(wa.data.available_balance);S.reserved=num(wa.data.reserved_balance);S.wallet=wa.data;
+    S.tx=tr.data||[];S.deposits=dp.data||[];S.withdrawals=wd.data||[];S.buildings=mapServerBuildings(ub.data||[]);
+    if(!S.buildings.some(b=>b.id===S.sel))S.sel=S.buildings[0]?.id||null;
+    $('depositAddress').textContent=S.config?.deposit_wallet||'—';
+    updateUserPill();renderObjects();refresh();renderWallet();
+    if(!quiet&&S.buildings.length===0)toast('🏙️ Tu ciudad está lista. Compra tu primera propiedad.');
+  }catch(e){console.error(e);if(!quiet)toast('⚠️ No se pudieron cargar tus datos: '+(e.message||e));}
+  finally{S.loading=false;}
+}
+function updateUserPill(){
+  if(!S.user){$('userPill').style.display='none';return;}$('userPill').style.display='flex';$('userMail').textContent=S.profile?.email||S.user.email||'';
+  const admin=S.profile?.role==='admin';$('userRole').innerHTML=`<span class="serverDot"></span>${admin?'ADMINISTRADOR':'USUARIO VERIFICADO'}`;
+}
+
+/* ---------- Collect all eligible properties ---------- */
+$('btnCollect').addEventListener('click',async()=>{
+  if(!S.user){showAuth();return;}if(S.loading)return;
+  const eligible=S.buildings.filter(b=>b.server&&availableDays(b)>0);
+  if(!eligible.length){toast('⏳ Aún no hay un nuevo día completo disponible.');return;}
+  const btn=$('btnCollect');btn.classList.add('busy');let total=0,failed=0;
+  for(const b of eligible){
+    const {data,error}=await sb.rpc('claim_building_income',{p_user_building_id:b.id});
+    if(error){console.warn('claim failed',b.id,error);failed++;}else total+=num(data);
+  }
+  await loadGameData({quiet:true});btn.classList.remove('busy');
+  if(total>0){burst(total);toast(`💰 Cobro confirmado por servidor: +${fmt2(total)} USDT`);}else toast('⚠️ No se pudo completar el cobro.');
+  if(failed)console.warn(`${failed} cobro(s) rechazado(s) por servidor`);
+});
+
+/* =====================================================================
+   PESTAÑAS / TIENDA / BILLETERA / REFERIDOS
+   ===================================================================== */
+const modals={tTienda:'shopModal',tBill:'walletModal',tRef:'refModal'};
+async function setTab(id){
+  if(!S.user&&id!=='tCiudad'){showAuth();return;}
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.id===id));document.querySelectorAll('.modal').forEach(m=>m.classList.remove('open'));if(modals[id])$(modals[id]).classList.add('open');
+  if(id==='tBill'){await loadGameData({quiet:true});renderWallet();}if(id==='tTienda')renderShop();if(id==='tRef')await renderRefHistory();
+}
+['tCiudad','tTienda','tBill','tRef'].forEach(id=>$(id).addEventListener('click',()=>setTab(id)));$('btnWalletTop').addEventListener('click',()=>setTab('tBill'));
+document.querySelectorAll('.modal').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)setTab('tCiudad');});m.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>setTab('tCiudad')));});
+
+/* ---------- Shop / secure purchase ---------- */
+function renderShop(){
+  const g=$('shopGrid');g.innerHTML='';const noSpace=freeCells().length===0;
+  Object.keys(TYPES).forEach(k=>{const T=TYPES[k],card=document.createElement('div'),disabled=S.bal<T.price||noSpace;card.className='card';
+    card.innerHTML=`<svg viewBox="${SYMD[k].vb}" preserveAspectRatio="xMidYMid meet"><use href="#sym-${k}"/></svg><div class="cn">${T.name}</div><div class="cr">+${fmt2(T.rent)} USDT/día · 75 días</div><div class="cp">💰 ${fmt2(T.price)} USDT</div><button class="buyBtn" ${disabled?'disabled':''}>${noSpace?'CIUDAD LLENA':S.bal<T.price?'SALDO INSUFICIENTE':'COMPRAR'}</button>`;
+    card.querySelector('.buyBtn').addEventListener('click',()=>startPlacing(k));g.appendChild(card);
+  });
+}
+function startPlacing(k){
+  if(!S.user){showAuth();return;}if(S.bal<TYPES[k].price){toast('💸 Saldo insuficiente en el servidor.');return;}if(!freeCells().length){toast('🏙️ No quedan parcelas libres.');return;}
+  S.placing=k;setTab('tCiudad');const h=$('placeHint');h.innerHTML=`Toca una <b>parcela verde</b> para comprar y colocar tu <b>${TYPES[k].name}</b> (−${fmt2(TYPES[k].price)} USDT)<button class="cancelMini" id="btnCancelPlace">CANCELAR</button>`;h.style.display='block';$('btnCancelPlace').addEventListener('click',cancelPlacing);drawPlots();
+}
+function cancelPlacing(){S.placing=null;S.placingBusy=false;$('placeHint').style.display='none';$('plotLayer').innerHTML='';}
+function freeCells(){const occ=new Set(S.buildings.map(b=>b.cell.join(',')));return usableCells().filter(c=>!occ.has(c.i+','+c.j));}
+function drawPlots(){const L=$('plotLayer');L.innerHTML=freeCells().map(c=>`<polygon class="plot" data-c="${c.i},${c.j}" points="${P(diamond(c.x,c.y,BHW-10,BHH-5))}"/>`).join('');L.querySelectorAll('.plot').forEach(p=>p.addEventListener('click',()=>placeAt(p.dataset.c)));}
+async function placeAt(cs){
+  if(!S.placing||S.placingBusy)return;S.placingBusy=true;const [i,j]=cs.split(',').map(Number),type=S.placing,T=TYPES[type];$('placeHint').innerHTML=`⏳ Servidor verificando saldo y comprando <b>${T.name}</b>...`;
+  const {data,error}=await sb.rpc('purchase_building',{p_building_id:type});
+  if(error){S.placingBusy=false;toast('❌ Compra rechazada: '+error.message);cancelPlacing();await loadGameData({quiet:true});return;}
+  savePosition(data,[i,j],[0,0]);cancelPlacing();await loadGameData({quiet:true});S.sel=data;renderObjects();select(data);const nb=S.buildings.find(b=>b.id===data);if(nb){const [x,y]=bXY(nb);sparkle(x,y-60);}toast(`🏗️ ${T.name} comprado. Ciclo de 75 días iniciado.`);
+}
+scene.addEventListener('click',e=>{const g=e.target.closest('.bld');if(g)select(g.dataset.id);});
+
+/* ---------- Wallet ---------- */
+function txLabel(t){return t.description||({deposit:'Depósito aprobado',building_purchase:'Compra de propiedad',building_income:'Producción cobrada',withdrawal_reserved:'Retiro solicitado',withdrawal_refund:'Retiro rechazado',referral_reward:'Comisión de referido'}[t.type]||t.type);}
+function renderWallet(){
+  $('wBal').textContent=fmt2(S.bal)+' USDT';$('retBalShow').textContent='$'+fmt2(S.bal);
+  const pending=S.deposits.filter(d=>d.status==='pending').map(d=>({n:'Depósito pendiente · '+fmt2(num(d.submitted_amount))+' USDT',a:0,t:when(d.created_at)}));
+  const tx=S.tx.map(t=>({n:txLabel(t),a:num(t.amount),t:when(t.created_at)}));const rows=[...pending,...tx].slice(0,70);
+  $('txList').innerHTML=rows.length?rows.map(t=>`<div class="tx"><div><div>${safeHtml(t.n)}</div><div class="td">${safeHtml(t.t)}</div></div><div class="amt ${t.a>=0?'tp':'tn'}">${t.a===0?'PENDIENTE':(t.a>=0?'+':'')+fmt2(Math.abs(t.a))+' USDT'}</div></div>`).join(''):'<div style="color:#6b7590;font-size:14px;padding:12px 0">Sin movimientos aún.</div>';
+}
+$('btnDep').addEventListener('click',async()=>{
+  if(!S.user){showAuth();return;}const h=$('depHashInput').value.trim(),a=parseFloat($('depAmtInput').value);
+  if(!/^0x[0-9a-fA-F]{64}$/.test(h)){toast('⚠️ El hash BEP-20 debe tener formato 0x + 64 caracteres.');return;}if(!a||a<10){toast('⚠️ Mínimo de depósito: $10 USDT.');return;}
+  $('btnDep').disabled=true;const {error}=await sb.rpc('submit_deposit',{p_amount:a,p_tx_hash:h});$('btnDep').disabled=false;
+  if(error){toast('❌ Depósito rechazado: '+error.message);return;}$('depHashInput').value='';$('depAmtInput').value='';toast('✅ Depósito enviado a revisión. El saldo NO se acredita hasta aprobación.');await loadGameData({quiet:true});renderWallet();
+});
+$('btnRet').addEventListener('click',async()=>{
+  if(!S.user){showAuth();return;}const w=$('retWalletInput').value.trim(),a=parseFloat($('retAmtInput').value);
+  if(!/^0x[0-9a-fA-F]{40}$/.test(w)){toast('⚠️ Wallet BEP-20 inválida.');return;}if(!a||a<5){toast('⚠️ Mínimo de retiro: $5 USDT.');return;}if(a>S.bal){toast('💸 Saldo insuficiente en el servidor.');return;}
+  $('btnRet').disabled=true;const {error}=await sb.rpc('request_withdrawal',{p_amount:a,p_wallet_address:w});$('btnRet').disabled=false;
+  if(error){toast('❌ Retiro rechazado: '+error.message);return;}$('retWalletInput').value='';$('retAmtInput').value='';toast('📤 Retiro solicitado. El saldo quedó reservado inmediatamente.');await loadGameData({quiet:true});renderWallet();
+});
+
+/* ---------- Referrals ---------- */
+async function renderRefHistory(){
+  if(!S.user)return;const [net,rw]=await Promise.all([sb.rpc('get_referral_network'),sb.from('referral_rewards').select('*').eq('beneficiary_user_id',S.user.id).order('created_at',{ascending:false}).limit(50)]);
+  if(net.error)console.warn(net.error);if(rw.error)console.warn(rw.error);S.refNetwork=net.data||[];S.refRewards=rw.data||[];
+  const base=location.protocol==='file:'?'https://metrobuilds.app/':location.origin+location.pathname;$('refLink').textContent=base+'?ref='+(S.profile?.referral_code||'');
+  $('refCount').textContent=S.refNetwork.filter(r=>num(r.referral_level)===1).length;$('refEarned').textContent='$'+fmt2(num(S.wallet?.total_referral_earned));
+  const names=new Map(S.refNetwork.map(r=>[r.referral_user_id,r.referral_display_name||'Usuario MetroBuilds']));
+  const el=$('refHistory');if(!S.refRewards.length){el.innerHTML='<div class="refEmpty">Aún no tienes comisiones registradas.<br>¡Comparte tu enlace!</div>';return;}
+  const colors={1:'#00ff7a',2:'#00b4ff',3:'#ffcc00'};
+  el.innerHTML=S.refRewards.map(r=>{const lvl=num(r.level),col=colors[lvl]||'#fff';return `<div class="refHist"><div class="refHist-left"><div class="refHist-name">👤 ${safeHtml(names.get(r.source_user_id)||'Usuario referido')}</div><div class="refHist-date">${safeHtml(when(r.created_at))}</div><span class="refHist-lvl" style="background:${col}22;color:${col};border:1px solid ${col}44">Nivel ${lvl} · ${fmt2(num(r.percentage)*100)}%</span></div><div class="refHist-amt">+$${fmt2(num(r.amount))}</div></div>`;}).join('');
+}
+$('btnCopy').addEventListener('click',()=>{const txt=$('refLink').textContent;(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('📋 Enlace copiado.')).catch(()=>toast('📋 Enlace: '+txt));});
+
+/* =====================================================================
+   AUTH
+   ===================================================================== */
+let authMode='login';
+function authMessage(msg,type=''){$('authMsg').textContent=msg;$('authMsg').className='authMsg '+type;}
+function setAuthMode(mode){authMode=mode;const reg=mode==='register';$('authCard').classList.toggle('register',reg);$('authTabLogin').classList.toggle('active',!reg);$('authTabRegister').classList.toggle('active',reg);$('authSubmit').textContent=reg?'CREAR MI CIUDAD':'ENTRAR A METROBUILDS';$('authPassword').autocomplete=reg?'new-password':'current-password';authMessage('');}
+function showAuth(){
+  $('authGate').classList.remove('hidden');const ref=new URLSearchParams(location.search).get('ref');if(ref&&!$('authReferral').value)$('authReferral').value=ref.toUpperCase();
+}
+function hideAuth(){$('authGate').classList.add('hidden');}
+$('authTabLogin').addEventListener('click',()=>setAuthMode('login'));$('authTabRegister').addEventListener('click',()=>setAuthMode('register'));
+$('authSubmit').addEventListener('click',async()=>{
+  if(!sb){authMessage('No se cargó la conexión con Supabase.','err');return;}const email=$('authEmail').value.trim(),password=$('authPassword').value,name=$('authName').value.trim(),ref=$('authReferral').value.trim().toUpperCase();
+  if(!email||!password){authMessage('Ingresa correo y contraseña.','err');return;}if(password.length<6){authMessage('La contraseña debe tener al menos 6 caracteres.','err');return;}if(authMode==='register'&&name.length<2){authMessage('Escribe un nombre válido.','err');return;}
+  $('authSubmit').disabled=true;authMessage('Conectando con el servidor...');
+  try{
+    if(authMode==='login'){
+      const {error}=await sb.auth.signInWithPassword({email,password});if(error)throw error;authMessage('Sesión iniciada.','ok');
+    }else{
+      const {data,error}=await sb.auth.signUp({email,password,options:{data:{display_name:name,referral_code:ref||null}}});if(error)throw error;
+      if(!data.session){authMessage('✅ Cuenta creada. Revisa tu correo para confirmar y luego inicia sesión.','ok');setAuthMode('login');}else authMessage('✅ Cuenta creada. Entrando...','ok');
+    }
+  }catch(e){authMessage(e.message||'No se pudo completar la operación.','err');}
+  finally{$('authSubmit').disabled=false;}
+});
+$('authPassword').addEventListener('keydown',e=>{if(e.key==='Enter')$('authSubmit').click();});
+$('btnLogout').addEventListener('click',async()=>{if(sb)await sb.auth.signOut();});
+
+async function applySession(session){
+  if(session?.user){S.user=session.user;hideAuth();await loadGameData();}
+  else{S.user=null;S.profile=null;S.config=null;S.bal=0;S.reserved=0;S.tx=[];S.deposits=[];S.withdrawals=[];S.refNetwork=[];S.refRewards=[];S.buildings=[...DEMO_BUILDINGS];S.sel=S.buildings[S.buildings.length-1]?.id||null;updateUserPill();renderObjects();refresh();showAuth();}
+}
+
+/* ---------- toast / scale ---------- */
+let toastT=null;function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3000);}
+function fit(){const s=Math.min(window.innerWidth/1536,window.innerHeight/1024);$('stage').style.transform='scale('+s+')';}
+window.addEventListener('resize',fit);
+
+/* ---------- main loop only renders clocks; money is NEVER generated here ---------- */
+let lastRefresh=0;function loop(now){if(now-lastRefresh>250){lastRefresh=now;refresh();}requestAnimationFrame(loop);}function refresh(){renderIncome();updateBadges();renderDetail();}
+
+/* ---------- startup ---------- */
+async function boot(){
+  buildScene();renderIncome();fit();setAuthMode('login');const ref=new URLSearchParams(location.search).get('ref');if(ref){$('authReferral').value=ref.toUpperCase();setAuthMode('register');}
+  if(!sb){authMessage('❌ No se pudo cargar Supabase JS. Revisa tu conexión a internet.','err');showAuth();requestAnimationFrame(loop);return;}
+  sb.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>applySession(session),0);});
+  const {data}=await sb.auth.getSession();await applySession(data.session);
+  window.addEventListener('focus',()=>{if(S.user)loadGameData({quiet:true});});
+  setInterval(()=>{if(S.user)loadGameData({quiet:true});},30000);
+  requestAnimationFrame(loop);
+}
+boot();
+
+</script>
+</body>
+</html>
